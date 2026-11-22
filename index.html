@@ -3,390 +3,218 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>J.A.R.V.I.S. | Personal Assistant</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JARVIS Assistant</title>
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+ background:#030914;color:#d8f7ff;font-family:Arial;
+ text-align:center;padding:20px;margin:0
 }
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    background: radial-gradient(circle at center, #102d48, #030912 75%);
-    color: #00eaff;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
+h1{color:#42dcff;letter-spacing:7px}
+.subtitle{color:#759bad;letter-spacing:2px}
+.reactor{
+ width:145px;height:145px;border:4px solid #36dfff;
+ border-radius:50%;margin:30px auto;
+ display:grid;place-items:center;
+ box-shadow:0 0 25px #00cfff,inset 0 0 20px #00cfff;
+ animation:pulse 2s infinite
 }
-
-h1 {
-    font-size: 38px;
-    letter-spacing: 9px;
-    text-shadow: 0 0 20px #00eaff;
-    margin-bottom: 5px;
+.core{
+ width:70px;height:70px;border-radius:50%;
+ background:#7beaff;box-shadow:0 0 35px #00cfff
 }
-
-.subtitle {
-    letter-spacing: 4px;
-    font-size: 12px;
-    color: #8defff;
+@keyframes pulse{
+ 50%{box-shadow:0 0 40px #00cfff,inset 0 0 30px #00cfff}
 }
-
-.clock {
-    margin: 25px auto;
-    font-size: 27px;
-    text-shadow: 0 0 12px #00eaff;
+.panel{
+ max-width:520px;margin:20px auto;padding:20px;
+ background:#071725;border:1px solid #17617a;
+ border-radius:14px
 }
-
-.reactor {
-    width: 180px;
-    height: 180px;
-    border: 5px solid #00eaff;
-    border-radius: 50%;
-    margin: 35px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 20px #00eaff, inset 0 0 25px #00eaff;
-    animation: pulse 2s infinite alternate;
+input{
+ width:100%;padding:14px;margin:12px 0;
+ background:#020b14;color:white;
+ border:1px solid #267c99;border-radius:8px;
+ font-size:16px
 }
-
-.core {
-    width: 85px;
-    height: 85px;
-    border: 3px solid white;
-    border-radius: 50%;
-    background: #00bfff;
-    box-shadow: 0 0 30px #00eaff;
+button{
+ padding:12px 16px;margin:5px;
+ background:#08283a;color:#b9f5ff;
+ border:1px solid #39dfff;border-radius:7px
 }
-
-@keyframes pulse {
-    from { transform: scale(1); }
-    to { transform: scale(1.06); }
+#output{
+ text-align:left;min-height:100px;
+ max-height:220px;overflow:auto;line-height:1.7
 }
-
-.panel {
-    max-width: 520px;
-    margin: 20px auto;
-    padding: 22px;
-    border: 1px solid #00bfff;
-    border-radius: 15px;
-    background: rgba(0, 15, 30, 0.85);
-    box-shadow: 0 0 15px #004d70;
-}
-
-input, select {
-    width: 100%;
-    padding: 13px;
-    border-radius: 8px;
-    border: 1px solid #00eaff;
-    background: #061522;
-    color: white;
-    margin: 8px 0;
-    font-size: 15px;
-}
-
-button {
-    padding: 13px 20px;
-    margin: 7px;
-    border: 1px solid #00eaff;
-    border-radius: 8px;
-    background: #00bfff;
-    color: #00101c;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-button:active {
-    transform: scale(0.96);
-}
-
-.response {
-    min-height: 55px;
-    color: white;
-    line-height: 1.6;
-    margin-top: 20px;
-}
-
-.status {
-    font-size: 12px;
-    color: #7cecff;
-    margin-top: 20px;
-}
-
-.footer {
-    font-size: 11px;
-    color: #668da5;
-    margin-top: 35px;
-}
+.device{display:inline-block;padding:12px;margin:6px;border:1px solid #17617a;border-radius:8px}
+.on{color:#54ffad}.off{color:#ff8585}
+small{color:#759bad}
 </style>
 </head>
-
 <body>
 
 <h1>J.A.R.V.I.S.</h1>
 <div class="subtitle">JUST A RATHER VERY INTELLIGENT SYSTEM</div>
 
-<div class="clock" id="clock">--:--:--</div>
-<div id="date"></div>
+<div class="reactor"><div class="core"></div></div>
 
-<div class="reactor">
-    <div class="core"></div>
+<div id="status">SYSTEM ONLINE</div>
+<div id="clock"></div>
+
+<div class="panel">
+<h3>COMMAND CENTER</h3>
+<input id="command" placeholder="Enter your command">
+<button onclick="processCommand()">EXECUTE</button>
+<button onclick="startListening()">MICROPHONE</button>
+<button onclick="stopSpeaking()">STOP VOICE</button>
+<div id="output">JARVIS: Good day. I am ready.</div>
 </div>
 
 <div class="panel">
-
-    <h3>PERSONAL ASSISTANT</h3>
-
-    <input id="command"
-        type="text"
-        placeholder="Type a command...">
-
-    <button onclick="runCommand()">
-        EXECUTE
-    </button>
-
-    <button onclick="listen()">
-        🎙 ACTIVATE MICROPHONE
-    </button>
-
-    <button onclick="stopSpeech()">
-        STOP VOICE
-    </button>
-
-    <div class="response" id="response">
-        Systems online. Awaiting your command.
-    </div>
-
-    <div class="status" id="status">
-        SYSTEM STATUS: ONLINE
-    </div>
-
-    <hr style="border-color:#16445b;margin:20px 0;">
-
-    <label for="voiceSelect">VOICE SELECTION</label>
-    <select id="voiceSelect">
-        <option value="">Loading available voices...</option>
-    </select>
-
-</div>
-
-<div class="footer">
-    J.A.R.V.I.S. PERSONAL PROJECT | VERSION 1.0
+<h3>SMART HOME</h3>
+<div class="device">LIGHT: <span id="light" class="off">OFF</span></div>
+<div class="device">FAN: <span id="fan" class="off">OFF</span></div>
+<div class="device">AC: <span id="ac" class="off">OFF</span></div>
+<small>Simulation only. No real appliances connected.</small>
 </div>
 
 <script>
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
+const output=document.getElementById("output");
+const statusBox=document.getElementById("status");
+let recognition=null;
+let remembered="";
 
-let recognition = null;
-
-function updateClock() {
-    const now = new Date();
-
-    document.getElementById("clock").textContent =
-        new Intl.DateTimeFormat("en-IN", {
-            timeZone: "Asia/Kolkata",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true
-        }).format(now);
-
-    document.getElementById("date").textContent =
-        new Intl.DateTimeFormat("en-IN", {
-            timeZone: "Asia/Kolkata",
-            dateStyle: "full"
-        }).format(now);
+function show(message){
+ const line=document.createElement("div");
+ line.textContent=message;
+ output.appendChild(line);
+ output.scrollTop=output.scrollHeight;
 }
 
-setInterval(updateClock, 1000);
+function speak(message){
+ if(!window.speechSynthesis)return;
+ speechSynthesis.cancel();
+ const voice=new SpeechSynthesisUtterance(message);
+ voice.rate=0.92;
+ voice.pitch=0.85;
+ speechSynthesis.speak(voice);
+}
+
+function reply(message){
+ show("JARVIS: "+message);
+ speak(message);
+}
+
+function device(name,on){
+ const item=document.getElementById(name);
+ item.textContent=on?"ON":"OFF";
+ item.className=on?"on":"off";
+}
+
+function processCommand(){
+ const field=document.getElementById("command");
+ const original=field.value.trim();
+ if(!original)return;
+
+ show("YOU: "+original);
+ field.value="";
+
+ const text=original.toLowerCase();
+ const wantsOn=/\b(on|start|activate|open)\b/.test(text);
+ const wantsOff=/\b(off|stop|deactivate|close)\b/.test(text);
+
+ if(text.includes("what did you remember")){
+  reply(remembered||"I have nothing remembered yet.");
+  return;
+ }
+
+ if(text.startsWith("remember that ")){
+  remembered=original.substring(14).trim();
+  reply("I will remember that during this session.");
+  return;
+ }
+
+ if(/\b(light|lights|bulb|bulbs)\b/.test(text)){
+  if(wantsOn){device("light",true);reply("Lights switched on in simulation.");}
+  else if(wantsOff){device("light",false);reply("Lights switched off in simulation.");}
+  else reply("Would you like me to switch the lights on or off?");
+  return;
+ }
+
+ if(/\bfans?\b/.test(text)){
+  if(wantsOn){device("fan",true);reply("Fan switched on in simulation.");}
+  else if(wantsOff){device("fan",false);reply("Fan switched off in simulation.");}
+  else reply("Would you like me to switch the fan on or off?");
+  return;
+ }
+
+ if(/\b(ac|air conditioner|air conditioning)\b/.test(text)){
+  if(wantsOn){device("ac",true);reply("AC switched on in simulation.");}
+  else if(wantsOff){device("ac",false);reply("AC switched off in simulation.");}
+  else reply("Would you like me to switch the AC on or off?");
+  return;
+ }
+
+ if(/\b(hello|hi|hey)\b/.test(text)){
+  reply("Hello. All systems are running normally.");
+ }
+ else if(text.includes("your name")||text.includes("who are you")){
+  reply("I am JARVIS, your personal virtual assistant.");
+ }
+ else if(text.includes("time")){
+  reply("The time is "+new Date().toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata"}));
+ }
+ else if(text.includes("date")||text.includes("day")){
+  reply("Today is "+new Date().toLocaleDateString("en-IN",{timeZone:"Asia/Kolkata",weekday:"long",day:"numeric",month:"long",year:"numeric"}));
+ }
+ else if(text.includes("status")){
+  reply("All virtual systems are online.");
+ }
+ else if(text.includes("help")||text.includes("commands")){
+  reply("Try hello, time, date, lights on, fan off, AC on, or remember that I like astronomy.");
+ }
+ else{
+  reply("I do not recognise that command yet. Say help to see available commands.");
+ }
+}
+
+function startListening(){
+ const Speech=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!Speech){
+  reply("Speech recognition is not supported. Please use the text box.");
+  return;
+ }
+ if(recognition)recognition.stop();
+
+ recognition=new Speech();
+ recognition.lang="en-IN";
+ recognition.onstart=()=>statusBox.textContent="LISTENING...";
+ recognition.onend=()=>statusBox.textContent="SYSTEM ONLINE";
+ recognition.onerror=e=>statusBox.textContent="MICROPHONE: "+e.error;
+ recognition.onresult=e=>{
+  document.getElementById("command").value=e.results[0][0].transcript;
+  processCommand();
+ };
+ recognition.start();
+}
+
+function stopSpeaking(){
+ if(window.speechSynthesis)speechSynthesis.cancel();
+}
+
+document.getElementById("command").addEventListener("keydown",e=>{
+ if(e.key==="Enter")processCommand();
+});
+
+function updateClock(){
+ document.getElementById("clock").textContent=
+ "INDIA TIME: "+new Date().toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata"});
+}
+
+setInterval(updateClock,1000);
 updateClock();
-
-function loadVoices() {
-    const voices = speechSynthesis.getVoices();
-    const select = document.getElementById("voiceSelect");
-
-    select.innerHTML = "";
-
-    if (voices.length === 0) {
-        select.innerHTML =
-            '<option value="">Default device voice</option>';
-        return;
-    }
-
-    voices.forEach((voice, index) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent =
-            voice.name + " (" + voice.lang + ")";
-        select.appendChild(option);
-    });
-
-    const preferred = voices.findIndex(v =>
-        v.lang.toLowerCase() === "en-in"
-    );
-
-    if (preferred >= 0) {
-        select.value = preferred;
-    }
-}
-
-loadVoices();
-speechSynthesis.onvoiceschanged = loadVoices;
-
-function speak(message) {
-    speechSynthesis.cancel();
-
-    const speech = new SpeechSynthesisUtterance(message);
-    speech.lang = "en-IN";
-    speech.rate = 0.9;
-    speech.pitch = 0.9;
-
-    const voices = speechSynthesis.getVoices();
-    const selected =
-        document.getElementById("voiceSelect").value;
-
-    if (selected !== "" && voices[selected]) {
-        speech.voice = voices[selected];
-    }
-
-    speechSynthesis.speak(speech);
-}
-
-function respond(command) {
-    let answer = "";
-    const now = new Date();
-
-    if (command.includes("hello") ||
-        command.includes("hi jarvis") ||
-        command === "hi") {
-
-        answer = "Hello! How may I assist you today?";
-    }
-
-    else if (command.includes("time")) {
-        const time = new Intl.DateTimeFormat("en-IN", {
-            timeZone: "Asia/Kolkata",
-            hour: "numeric",
-            minute: "2-digit",
-            hour12: true
-        }).format(now);
-
-        answer = "The current Indian time is " + time;
-    }
-
-    else if (command.includes("date")) {
-        const date = new Intl.DateTimeFormat("en-IN", {
-            timeZone: "Asia/Kolkata",
-            dateStyle: "long"
-        }).format(now);
-
-        answer = "Today is " + date;
-    }
-
-    else if (command.includes("status") ||
-             command.includes("working")) {
-
-        answer = "All available systems are operational.";
-    }
-
-    else if (command.includes("your name") ||
-             command.includes("who are you")) {
-
-        answer = "I am JARVIS, your personal assistant.";
-    }
-
-    else if (command.includes("help")) {
-        answer = "You can ask me for the time, date, or system status. You can also say hello.";
-    }
-
-    else if (command.includes("shutdown") ||
-             command.includes("shut down") ||
-             command.includes("exit")) {
-
-        answer = "Signing off. Have a good day.";
-    }
-
-    else {
-        answer = "I do not recognise that command yet.";
-    }
-
-    document.getElementById("response").textContent = answer;
-    speak(answer);
-}
-
-function runCommand() {
-    const command =
-        document.getElementById("command").value
-        .toLowerCase().trim();
-
-    if (!command) {
-        document.getElementById("response").textContent =
-            "Please enter a command.";
-        return;
-    }
-
-    respond(command);
-}
-
-function listen() {
-    if (!SpeechRecognition) {
-        document.getElementById("response").textContent =
-            "Speech recognition is not supported by this browser.";
-        return;
-    }
-
-    if (recognition) {
-        recognition.abort();
-    }
-
-    recognition = new SpeechRecognition();
-    recognition.lang = "en-IN";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    document.getElementById("status").textContent =
-        "STATUS: LISTENING...";
-
-    recognition.onresult = function(event) {
-        const command =
-            event.results[0][0].transcript.toLowerCase();
-
-        document.getElementById("command").value = command;
-
-        respond(command);
-    };
-
-    recognition.onerror = function(event) {
-        document.getElementById("response").textContent =
-            "Microphone error: " + event.error;
-    };
-
-    recognition.onend = function() {
-        document.getElementById("status").textContent =
-            "SYSTEM STATUS: ONLINE";
-    };
-
-    recognition.start();
-}
-
-function stopSpeech() {
-    speechSynthesis.cancel();
-
-    if (recognition) {
-        recognition.abort();
-    }
-
-    document.getElementById("status").textContent =
-        "SYSTEM STATUS: ONLINE";
-}
 </script>
-
 </body>
-    </html>
-
+                             </html>
     
